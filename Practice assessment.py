@@ -10,7 +10,6 @@ burgers = ['Chicken Burger', 'Beef Burger', 'Butte Chicken Burger', 'Lamb Burger
 
 class interface:
     def __init__(self, parent):
-    #Main 3 sections
      self.startframe = Frame(parent, highlightbackground= "black", highlightthickness=1, width=575, height=350)
      self.startframe.place(x=287.5, y=175)
      self.startframe.pack_propagate(False)
@@ -29,6 +28,7 @@ class interface:
 
 class Menu:
     def __init__(self, parent):
+        #Main 3 sections
         self.categoryframe = Frame(parent, highlightbackground="black", highlightthickness=1, bg="beige", height=700, width=333)
         self.categoryframe.grid(column=0, row=0)
         self.categoryframe.grid_propagate(False)
@@ -67,6 +67,7 @@ class Menu:
                 vertical = +1
                 vertical = vertical+1
 
+        #Order confirmation widget
         displayorder = Frame(self.orderframe, highlightbackground="black", highlightthickness=1, height= 400, width=160)
         displayorder.grid_propagate(False)
         displayorder.pack(padx=5,pady=15)
