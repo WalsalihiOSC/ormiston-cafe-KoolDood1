@@ -40,12 +40,12 @@ class Menu:
         self.orderframe.pack_propagate(False)
 
         #Order confirmation widget
-        displayorder = Frame(self.orderframe, highlightbackground="black", highlightthickness=1, height= 400, width=160)
-        displayorder.grid_propagate(False)
-        displayorder.pack(padx=5,pady=15)
-        ordertext = Label(displayorder, text= "Order confrimation")
+        self.displayorder = Frame(self.orderframe, highlightbackground="black", highlightthickness=1, height= 400, width=160)
+        self.displayorder.pack_propagate(False)
+        self.displayorder.pack(padx=5,pady=15)
+        ordertext = Label(self.displayorder, text= "Order Confirmation")
         ordertext.config(font=("Courier", 9))
-        ordertext.grid(row=0, column=0,pady=10,padx=10)
+        ordertext.pack(pady=10,padx=10)
 
         # These are buttons created with a loop using the list of strings and placed with grid geometry
         rcount = 0 #Starting Row count
@@ -69,13 +69,19 @@ class Menu:
             vertical = 0
 
             items = self.d.burgers
-            for name in items: 
+            for index in range(len(items)): 
+                name = items[index]
 
-                menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)
+                menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)#Maybe adjust size
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
-                    #Add pictures, button, price into here
-                itemlabel = Label(menuframes, text= name)
+                    #Add pictures, maybe adjust resize
+                itemlabel = Label(menuframes, text= name) 
+                itemprice = Label(menuframes, text= self.d.burgerprice[index])
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
+                
                 itemlabel.pack()
+                itemprice.pack()
+                itembutton.pack()
                 horizontal += 1
                 
                 if horizontal == 3:
@@ -87,13 +93,18 @@ class Menu:
             vertical = 0
 
             items = self.d.withrice
-            for name in items: 
-
+            for index in range(len(items)): 
+                name = items[index]
+                #Add pictures, maybe adjust resize
                 menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
-                    #Add pictures, button, price into here
-                itemlabel = Label(menuframes, text= name)
+                itemlabel = Label(menuframes, text= name) 
+                itemprice = Label(menuframes, text= self.d.withriceprice[index])
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
+
                 itemlabel.pack()
+                itemprice.pack()
+                itembutton.pack()
                 horizontal += 1
                 
                 if horizontal == 3:
@@ -105,13 +116,19 @@ class Menu:
             vertical = 0
 
             items = self.d.salads
-            for name in items: 
+            for index in range(len(items)): 
+                name = items[index]
 
                 menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
-                    #Add pictures, button, price into here
-                itemlabel = Label(menuframes, text= name)
+                    #Add pictures, maybe adjust resize
+                itemlabel = Label(menuframes, text= name) 
+                itemprice = Label(menuframes, text= self.d.saladprice[index])
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
+
                 itemlabel.pack()
+                itemprice.pack()
+                itembutton.pack()
                 horizontal += 1
                 
                 if horizontal == 3:
@@ -123,13 +140,19 @@ class Menu:
             vertical = 0
 
             items = self.d.desserts
-            for name in items: 
+            for index in range(len(items)): 
+                name = items[index]
 
                 menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
-                    #Add pictures, button, price into here
-                itemlabel = Label(menuframes, text= name)
+                    #Add pictures, maybe adjust resize
+                itemlabel = Label(menuframes, text= name) 
+                itemprice = Label(menuframes, text= self.d.dessertprice[index])
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
+
                 itemlabel.pack()
+                itemprice.pack()
+                itembutton.pack()
                 horizontal += 1
                 
                 if horizontal == 3:
@@ -141,13 +164,19 @@ class Menu:
             vertical = 0
 
             items = self.d.drinks
-            for name in items: 
+            for index in range(len(items)): 
+                name = items[index]
 
                 menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
-                    #Add pictures, button, price into here
-                itemlabel = Label(menuframes, text= name)
+                    #Add pictures, maybe adjust resize
+                itemlabel = Label(menuframes, text= name) 
+                itemprice = Label(menuframes, text= self.d.drinkprice[index])
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
+
                 itemlabel.pack()
+                itemprice.pack()
+                itembutton.pack()
                 horizontal += 1
                 
                 if horizontal == 3:
@@ -156,10 +185,12 @@ class Menu:
                     vertical = vertical+1
         else:
             pass
+
+    def addorder(self, item):
+            writeorder = Label(self.displayorder, text= item)
+            writeorder.pack()
     
   
-
-
 
 
 #Data class
@@ -171,6 +202,7 @@ class Data:
         
         
         self.burgers = ['Chicken Burger', 'Beef Burger', 'Fried Chicken Burger', 'Lamb Burger', 'Chilli burger', 'Legendary Burger']
+        self.burgerpicture = ['bur1.png', 'bur2.png', 'bur3.png', 'bur4.png', 'bur5.png', 'bur6.png']
         self.burgerprice = [6.00, 6.50, 7.00, 7.00, 7.50, 10]
 
         self.withrice = ['Butter Chicken', 'Teriyaki Chicken', 'Lamb curry', 'Potato curry', 'Chicken Katsu', 'Risotto'] 
