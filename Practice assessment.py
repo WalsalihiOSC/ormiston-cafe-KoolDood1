@@ -1,17 +1,18 @@
-#CSC Practice assessment app/coded design, Andre
+#CSC Practice assessment app/coded,functional UI, Andre
 
 
 from tkinter import *
+from PIL import ImageTk, Image
 
 
 
 class interface:
-    def __init__(self, parent):
-     self.startframe = Frame(parent, highlightbackground= "black", highlightthickness=1, width=575, height=350)
+    def __init__(self, parent): #Starting frames 
+     self.startframe = Frame(parent, bg="beige", highlightbackground= "black", highlightthickness=1, width=575, height=350)
      self.startframe.place(x=287.5, y=175)
      self.startframe.pack_propagate(False)
 
-     startlabel = Label(self.startframe, text="Ormiston cafe orders")
+     startlabel = Label(self.startframe, text="Ormiston cafe orders", bg="beige")
      startlabel.config(font=("Courier", 28))
      startlabel.pack(anchor=CENTER, padx=50, pady=100)
      
@@ -25,8 +26,8 @@ class interface:
 
 class Menu:
     def __init__(self, parent):
-        self.d = Data() #set variable with button, pull that data and put in order list
-        #Main 3 sections
+        self.d = Data() #Reference to data class
+        #Main 3 sections(frames)
         self.categoryframe = Frame(parent, highlightbackground="black", highlightthickness=1, bg="beige", height=700, width=333)
         self.categoryframe.grid(column=0, row=0)
         self.categoryframe.grid_propagate(False)
@@ -39,7 +40,7 @@ class Menu:
         self.orderframe.grid(column=2, row=0)
         self.orderframe.pack_propagate(False)
 
-        #Order confirmation widget
+        #Order confirmation window
         self.displayorder = Frame(self.orderframe, highlightbackground="black", highlightthickness=1, height= 400, width=160)
         self.displayorder.pack_propagate(False)
         self.displayorder.pack(padx=5,pady=15)
@@ -47,12 +48,34 @@ class Menu:
         ordertext.config(font=("Courier", 9))
         ordertext.pack(pady=10,padx=10)
 
-        # These are buttons created with a loop using the list of strings and placed with grid geometry
+        #Add clear button and checkout button
+        clearlist = Button(self.orderframe, text="Clear", command= self.clearlist)
+        checkout = Button(self.orderframe, text="Checkout", command=self.checkoutfunc)
+        clearlist.pack(padx=5, pady=10)
+        checkout.pack(padx=5, pady=10)
+
+
+        #Scrollbar for order window
+        canvas = Canvas(self.displayorder)
+        scrollbar = Scrollbar(canvas, orient="vertical", command=canvas.yview)
+        self.scrollable_frame = Frame(canvas)
+
+        self.scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill=BOTH, expand=True)
+        scrollbar.pack(side="right", fill="y")
+        
+        
+        
+
+        # These are buttons created with a loop using the list of strings from the data class and placed with grid geometry
         rcount = 0 #Starting Row count
         for button in self.d.categories:
             gridbuttons = Button(self.categoryframe, 
                                  text=button, command=lambda button=button: self.menupick(button))
-            gridbuttons.grid(sticky = W+E, row = rcount, padx=20)
+            gridbuttons.grid(sticky = W+E, row = rcount, padx=20, pady=5)
             rcount += 1
 
     def menupick(self, category):
@@ -68,17 +91,17 @@ class Menu:
             horizontal = 0 #Same as before, represents the starting placement position
             vertical = 0
 
-            items = self.d.burgers
+            items = self.d.burgers     #Below is loop to create menu frames
             for index in range(len(items)): 
                 name = items[index]
+                price = self.d.burgerprice[index]
 
                 menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)#Maybe adjust size
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
-                    #Add pictures, maybe adjust resize
                 itemlabel = Label(menuframes, text= name) 
                 itemprice = Label(menuframes, text= self.d.burgerprice[index])
-                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
-                
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name, price=price: self.addorder(name, price))
+            
                 itemlabel.pack()
                 itemprice.pack()
                 itembutton.pack()
@@ -95,12 +118,13 @@ class Menu:
             items = self.d.withrice
             for index in range(len(items)): 
                 name = items[index]
-                #Add pictures, maybe adjust resize
+                price = self.d.withriceprice[index]
+                
                 menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
                 itemlabel = Label(menuframes, text= name) 
                 itemprice = Label(menuframes, text= self.d.withriceprice[index])
-                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name, price=price: self.addorder(name, price))
 
                 itemlabel.pack()
                 itemprice.pack()
@@ -118,13 +142,13 @@ class Menu:
             items = self.d.salads
             for index in range(len(items)): 
                 name = items[index]
+                price = self.d.saladprice[index]
 
                 menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
-                    #Add pictures, maybe adjust resize
                 itemlabel = Label(menuframes, text= name) 
                 itemprice = Label(menuframes, text= self.d.saladprice[index])
-                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name, price=price: self.addorder(name, price))
 
                 itemlabel.pack()
                 itemprice.pack()
@@ -142,13 +166,13 @@ class Menu:
             items = self.d.desserts
             for index in range(len(items)): 
                 name = items[index]
+                price = self.d.dessertprice[index]
 
                 menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
-                    #Add pictures, maybe adjust resize
                 itemlabel = Label(menuframes, text= name) 
                 itemprice = Label(menuframes, text= self.d.dessertprice[index])
-                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name, price=price: self.addorder(name, price))
 
                 itemlabel.pack()
                 itemprice.pack()
@@ -166,14 +190,14 @@ class Menu:
             items = self.d.drinks
             for index in range(len(items)): 
                 name = items[index]
+                price = self.d.drinkprice[index]
 
                 menuframes = Frame(self.mainframe, highlightbackground="black", highlightthickness=1)
                 menuframes.grid(column=horizontal, row=vertical, padx=10, pady=10)
-                    #Add pictures, maybe adjust resize
                 itemlabel = Label(menuframes, text= name) 
                 itemprice = Label(menuframes, text= self.d.drinkprice[index])
-                itembutton = Button(menuframes, text= "Add", command=lambda name=name: self.addorder(name))
-
+                itembutton = Button(menuframes, text= "Add", command=lambda name=name, price=price: self.addorder(name, price))
+                
                 itemlabel.pack()
                 itemprice.pack()
                 itembutton.pack()
@@ -186,11 +210,33 @@ class Menu:
         else:
             pass
 
-    def addorder(self, item):
-            writeorder = Label(self.displayorder, text= item)
-            writeorder.pack()
-    
-  
+    def addorder(self, item, price): #Function that runs when you press add button
+        self.d.total += price
+        writeorder = Label(self.scrollable_frame, text= item)
+        writeorder.pack(padx= 10)
+
+
+    def clearlist(self): #Clears order list
+        for child in self.scrollable_frame.winfo_children():
+            child.destroy()
+        self.d.total = 0
+        
+
+    def checkoutfunc(self): #Creates checkout screen and deletes other frames
+        self.categoryframe.destroy()
+        self.mainframe.destroy()
+        self.orderframe.destroy()
+        self.totaldue = Label(text= "${}".format(self.d.total))
+        self.pay = Button(root, text="Pay", command= self.reset)
+        self.totaldue.pack(padx=20, pady=10)
+        self.pay.pack(padx=20, pady=20)
+
+    def reset(self): #Function button on checkout screen that resets program when pressed
+        self.d.total = 0
+        self.totaldue.destroy()
+        self.pay.destroy()
+        interface(root)
+
 
 
 #Data class
@@ -199,6 +245,7 @@ class Data:
         self.selected = StringVar()
         
         self.categories = ['Burger','With rice','Salads','Desserts','Drinks']
+        self.total = 0
         
         
         self.burgers = ['Chicken Burger', 'Beef Burger', 'Fried Chicken Burger', 'Lamb Burger', 'Chilli burger', 'Legendary Burger']
@@ -219,6 +266,7 @@ class Data:
 
      
     
+#Run
 if __name__ =="__main__":
     root = Tk()
     gui = interface(root)
